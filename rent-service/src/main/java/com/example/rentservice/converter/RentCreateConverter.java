@@ -17,8 +17,7 @@ public class RentCreateConverter implements GenericConverter<Rent, RentCreateDto
                 .userId(dto.getUserId())
                 .carId(dto.getCarId())
                 .status(RentStatus.VALIDATE)
-                .dateTime(LocalDateTime.now())
-                .uuid(UUID.randomUUID())
+                .startRent(LocalDateTime.now())
                 .build();
     }
 

@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("clients")
+@RequestMapping("client")
 @Slf4j
 public class ClientController {
 
@@ -33,16 +33,6 @@ public class ClientController {
         this.producerService = producerService;
     }
 
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Void> sendToDirectEx(@RequestBody Message message) {
-        log.info("send");
-        producerService.sendToFanoutExchange(message);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PostMapping
     public ResponseEntity<Void> addClient(@RequestBody @Valid ClientCreateDto createDto){
         Client client = clientCreateConverter.toEntity(createDto);
@@ -53,5 +43,11 @@ public class ClientController {
     @GetMapping
     public List<ClientDto> getAllUsers(){
         return clientConverter.toDto(clientService.getAllClients());
+    }
+
+    @GetMapping(path = "/{id}")
+    public ClientDto getUserByID(@PathVariable("id") Long id){
+        Client client = clientService.findById(id);
+        return clientConverter.toDto(client);
     }
 }

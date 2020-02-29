@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CarStatus implements Serializable {
+public class CarRentStatus implements Serializable {
     private String status;
     private Long carId;
     private Long rentId;

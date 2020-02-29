@@ -42,8 +42,10 @@ public class CarServiceImpl implements CarService {
                 .map(updatedCar -> {
                     updatedCar.setId(car.getId());
                     updatedCar.setCarStatus(car.getCarStatus());
-                    updatedCar.setAdress(car.getAdress());
+                    updatedCar.setCoordX(car.getCoordX());
+                    updatedCar.setCoordY(car.getCoordY());
                     updatedCar.setModel(car.getModel());
+                    updatedCar.setMinutePrice(car.getMinutePrice());
                     return repository.save(updatedCar);
                 })
                 .orElseThrow(() -> new ServiceException("No car found"));

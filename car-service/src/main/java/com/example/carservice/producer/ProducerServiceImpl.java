@@ -1,6 +1,6 @@
 package com.example.carservice.producer;
 
-import com.example.carservice.message.Message;
+import com.example.carservice.message.CarRentStatus;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,7 @@ public class ProducerServiceImpl implements ProducerService {
     RabbitTemplate rabbitTemplate;
 
     @Override
-    public void sendToFanoutExchange(Message message) {
-        rabbitTemplate.convertAndSend(fanoutExchange, "", message);
+    public void sendToFanoutExchange(CarRentStatus carStatus) {
+        rabbitTemplate.convertAndSend(fanoutExchange, "", carStatus);
     }
 }

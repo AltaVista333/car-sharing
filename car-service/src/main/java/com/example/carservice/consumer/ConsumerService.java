@@ -2,8 +2,8 @@ package com.example.carservice.consumer;
 
 import com.example.carservice.entity.Car;
 import com.example.carservice.entity.CarStatus;
-import com.example.carservice.message.CarStatusChanged;
-import com.example.carservice.message.Message;
+import com.example.carservice.message.CarRentStatus;
+import com.example.carservice.message.UpdateCarStatus;
 import com.example.carservice.producer.ProducerService;
 import com.example.carservice.service.CarService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,26 +25,26 @@ public class ConsumerService {
 
     @RabbitListener(queues = "${fromRent}")
     @Transactional
-    public void handleQueueAMessageReception(Message message) {
-        log.info("From rent to car : " + message.getName());
-        log.info("Car status: {}" , message.getName());
-        if("CarStatus".equals(message.getName())){
-            log.info("Car id : {}", message.getCarId());
-            Car car = carService.findById(message.getCarId());
-            log.info(car.getModel());
-            if (car.getCarStatus().equals(CarStatus.ACTIVE)){
-                car.setCarStatus(CarStatus.LOCKED);
-                carService.updateCar(car, car.getId());
-                producerService.sendToFanoutExchange(new CarStatusChanged(message.getUuid(), car.getId(), "CarSuccesfulyLocked"));
-                log.info("Car status update: {}", car.getCarStatus());
-            } else {
-                log.info("Bad try");
-                producerService.sendToFanoutExchange(new CarStatusChanged(message.getUuid(), car.getId(), "BadTry"));
-            }
-
+    public void handleQueueAMessageReception(UpdateCarStatus carStatusMessage) {
+        log.info("From rent to car carId: {}. Car status {}",
+                carStatusMessage.getCarId(), carStatusMessage.getStatus() );
+        Car car = carService.findById(carStatusMessage.getCarId());
+        if(car.getCarStatus().equals(CarStatus.ACTIVE)){
+            car.setCarStatus(CarStatus.RENTED);
+            carService.updateCar(car, car.getId());
+            producerService.sendToFanoutExchange(
+                    new CarRentStatus(CarStatus.RENTED.name(), car.getId(),carStatusMessage.getRentId()));
+            log.info("Car status update: {}", car.getCarStatus());
+        } else if(car.getCarStatus().equals(CarStatus.RENTED)) {
+            car.setCarStatus(CarStatus.ACTIVE);
+            carService.updateCar(car, car.getId());
+            producerService.sendToFanoutExchange(
+                    new CarRentStatus(CarStatus.ACTIVE.name(), car.getId(), carStatusMessage.getRentId()));
+            log.info("Car status update: {}", car.getCarStatus());
         } else {
-            log.info("Bad try2");
-            producerService.sendToFanoutExchange(new CarStatusChanged(message.getUuid(), message.getCarId(), "BadTry"));
+            log.info("Car status not update: {}", car.getCarStatus());
+            producerService.sendToFanoutExchange(
+                    new CarRentStatus("bad",car.getId(), carStatusMessage.getRentId()));
         }
 
     }

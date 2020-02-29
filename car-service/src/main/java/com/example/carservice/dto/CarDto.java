@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 @Builder
 @Data
@@ -22,12 +24,23 @@ public class CarDto {
     private String carStatus;
 
     @NotNull
-    private String adress;
+    @Positive
+    private Integer coordX;
 
-    public CarDto(Long id, @NotNull String model, @NotNull String carStatus, @NotNull String adress) {
+    @NotNull
+    @Positive
+    private Integer coordY;
+
+    @NotNull
+    @Positive
+    private BigDecimal minutePrice;
+
+    public CarDto(Long id, @NotNull String model, @NotNull String carStatus, @NotNull @Positive Integer coordX, @NotNull @Positive Integer coordY, @NotNull @Positive BigDecimal minutePrice) {
         this.id = id;
         this.model = model;
         this.carStatus = carStatus;
-        this.adress = adress;
+        this.coordX = coordX;
+        this.coordY = coordY;
+        this.minutePrice = minutePrice;
     }
 }

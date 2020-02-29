@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @NoArgsConstructor
@@ -28,6 +29,12 @@ public class Car {
     private CarStatus carStatus;
 
     @NotNull
-    private String adress;
+    private Integer coordX;
+
+    @NotNull
+    private Integer coordY;
+
+    @NotNull
+    private BigDecimal minutePrice;
 
 }

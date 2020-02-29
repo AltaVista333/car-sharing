@@ -4,12 +4,14 @@ alter sequence car_sequence owner to postgres;
 
 create table car
 (
-    id         bigint       not null
+    id           bigint         not null
         constraint car_pkey
             primary key,
-    adress     varchar(255) not null,
-    car_status varchar(255) not null,
-    model      varchar(255) not null
+    car_status   varchar(255)   not null,
+    coordx       integer        not null,
+    coordy       integer        not null,
+    minute_price numeric(19, 2) not null,
+    model        varchar(255)   not null
 );
 
 alter table car

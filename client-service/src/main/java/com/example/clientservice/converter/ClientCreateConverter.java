@@ -14,7 +14,7 @@ public class ClientCreateConverter implements GenericConverter<Client, ClientCre
                 .name(dto.getName())
                 .surname(dto.getSurname())
                 .email(dto.getEmail())
-                .status(Status.DISACTIVETED)
+                .status(Status.Free)
                 .build();
     }
 

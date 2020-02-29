@@ -19,8 +19,8 @@ import java.util.List;
 import static com.example.carservice.logger.CarControllerLog.*;
 
 @RestController
-@RequestMapping("cars")
 @Slf4j
+@RequestMapping("car")
 public class CarController {
 
     private CarService carService;
@@ -33,13 +33,13 @@ public class CarController {
         this.carCreateConverter = carCreateConverter;
     }
 
-    @GetMapping
+    @GetMapping(path = "/all")
     public List<CarDto> findCars() {
         log.info(ALL_CARS);
         return carConverter.toDto(carService.getAllCars());
     }
 
-    @PostMapping
+    @PostMapping(path = "/add")
     public ResponseEntity<Void> addCar(@RequestBody @Valid CarCreateDto carDto) {
         log.info(CREATE_NEW_CAR, carDto);
         Car car = carCreateConverter.toEntity(carDto);
@@ -50,9 +50,10 @@ public class CarController {
     @GetMapping("/{id}")
     public CarDto getCarById(@PathVariable("id") Long id) {
         log.info(CAR_BY_ID, id);
-        return carConverter.toDto(carService
-                .findById(id));
+        return carConverter.toDto(
+                carService.findById(id));
     }
+
 
     @PutMapping("/{id}")
     public CarDto updateCarById(@RequestBody @Valid CarDto carDto, @PathVariable("id") Long id) {

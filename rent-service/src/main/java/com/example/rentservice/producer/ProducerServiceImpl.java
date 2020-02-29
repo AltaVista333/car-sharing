@@ -1,6 +1,7 @@
 package com.example.rentservice.producer;
 
 import com.example.rentservice.message.Message;
+import com.example.rentservice.message.UpdateCarStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ public class ProducerServiceImpl implements ProducerService {
     RabbitTemplate template;
 
     @Override
-    public void sendToFanoutExchangeToCarService(Message message) {
-        log.info("send message to car-service: {}", message);
-        template.convertAndSend(fanoutExchangeToCar, "", message);
+    public void sendToFanoutExchangeToCarService(UpdateCarStatus updateCarStatus) {
+        log.info("send message to car-service: {}", updateCarStatus);
+        template.convertAndSend(fanoutExchangeToCar, "", updateCarStatus);
     }
 
     @Override

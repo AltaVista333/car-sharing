@@ -1,9 +1,9 @@
 package com.example.carservice.producer;
 
 
-import com.example.carservice.message.Message;
+import com.example.carservice.message.CarRentStatus;
 
 public interface ProducerService {
-    void sendToFanoutExchange(Message message);
+    void sendToFanoutExchange(CarRentStatus message);
 
 }

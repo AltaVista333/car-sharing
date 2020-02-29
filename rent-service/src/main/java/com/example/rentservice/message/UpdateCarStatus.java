@@ -1,18 +1,21 @@
 package com.example.rentservice.message;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class CheckCarStatus extends Message {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateCarStatus implements Serializable {
 
     private Long carId;
+    private String status;
+    private Long rentId;
 
-    public CheckCarStatus(UUID id, Long carId) {
-        super(id, "CarStatus");
-        this.carId = carId;
-    }
 }

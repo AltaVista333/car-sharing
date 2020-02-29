@@ -13,7 +13,9 @@ public class CarConverter implements GenericConverter<Car, CarDto> {
                 .id(dto.getId())
                 .model(dto.getModel())
                 .carStatus(CarStatus.valueOf(dto.getCarStatus()))
-                .adress(dto.getAdress())
+                .coordX(dto.getCoordX())
+                .coordY(dto.getCoordY())
+                .minutePrice(dto.getMinutePrice())
                 .build();
     }
 
@@ -21,10 +23,11 @@ public class CarConverter implements GenericConverter<Car, CarDto> {
     public CarDto toDto(Car entity) {
         return CarDto.builder()
                 .id(entity.getId())
-                .adress(entity.getAdress())
                 .model(entity.getModel())
                 .carStatus(entity.getCarStatus().name())
-                .adress(entity.getAdress())
+                .coordX(entity.getCoordX())
+                .coordY(entity.getCoordY())
+                .minutePrice(entity.getMinutePrice())
                 .build();
     }
 }

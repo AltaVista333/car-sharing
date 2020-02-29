@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -24,9 +25,6 @@ public class Rent {
     private Long id;
 
     @NotNull
-    private UUID uuid;
-
-    @NotNull
     private Long userId;
 
     @NotNull
@@ -36,6 +34,12 @@ public class Rent {
     @Enumerated(EnumType.STRING)
     private RentStatus status;
 
-    private LocalDateTime dateTime;
+    @NotNull
+    private LocalDateTime startRent;
+
+    private LocalDateTime endRent;
+    
+
+
 
 }

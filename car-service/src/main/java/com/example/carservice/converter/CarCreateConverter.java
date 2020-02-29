@@ -13,7 +13,9 @@ public class CarCreateConverter implements GenericConverter<Car, CarCreateDto> {
         return Car.builder()
                 .model(dto.getModel())
                 .carStatus(CarStatus.INACTIVE)
-                .adress(dto.getAdress())
+                .coordX(dto.getCoordX())
+                .coordY(dto.getCoordY())
+                .minutePrice(dto.getMinutePrice())
                 .build();
     }
 
