@@ -56,10 +56,11 @@ public class CarController {
 
 
     @PutMapping("/{id}")
-    public CarDto updateCarById(@RequestBody @Valid CarDto carDto, @PathVariable("id") Long id) {
+    public CarDto updateCarById(@RequestBody @Valid CarDto carDto) {
         return carConverter.toDto(
                 carService.updateCar(
-                        carConverter.toEntity(carDto), id));
+                        carConverter.toEntity(carDto), carDto.getId()));
     }
+
 
 }

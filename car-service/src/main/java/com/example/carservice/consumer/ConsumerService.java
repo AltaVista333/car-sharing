@@ -26,26 +26,8 @@ public class ConsumerService {
     @RabbitListener(queues = "${fromRent}")
     @Transactional
     public void handleQueueAMessageReception(UpdateCarStatus carStatusMessage) {
-        log.info("From rent to car carId: {}. Car status {}",
-                carStatusMessage.getCarId(), carStatusMessage.getStatus() );
-        Car car = carService.findById(carStatusMessage.getCarId());
-        if(car.getCarStatus().equals(CarStatus.ACTIVE)){
-            car.setCarStatus(CarStatus.RENTED);
-            carService.updateCar(car, car.getId());
-            producerService.sendToFanoutExchange(
-                    new CarRentStatus(CarStatus.RENTED.name(), car.getId(),carStatusMessage.getRentId()));
-            log.info("Car status update: {}", car.getCarStatus());
-        } else if(car.getCarStatus().equals(CarStatus.RENTED)) {
-            car.setCarStatus(CarStatus.ACTIVE);
-            carService.updateCar(car, car.getId());
-            producerService.sendToFanoutExchange(
-                    new CarRentStatus(CarStatus.ACTIVE.name(), car.getId(), carStatusMessage.getRentId()));
-            log.info("Car status update: {}", car.getCarStatus());
-        } else {
-            log.info("Car status not update: {}", car.getCarStatus());
-            producerService.sendToFanoutExchange(
-                    new CarRentStatus("bad",car.getId(), carStatusMessage.getRentId()));
-        }
+        carService.handleRentServiceMessage(carStatusMessage);
+
 
     }
 }

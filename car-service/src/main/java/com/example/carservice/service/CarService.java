@@ -1,6 +1,7 @@
 package com.example.carservice.service;
 
 import com.example.carservice.entity.Car;
+import com.example.carservice.message.UpdateCarStatus;
 
 import java.util.List;
 
@@ -13,5 +14,5 @@ public interface CarService {
 
     Car updateCar(Car car, Long id);
 
-
+    void handleRentServiceMessage(UpdateCarStatus carStatusMessage);
 }

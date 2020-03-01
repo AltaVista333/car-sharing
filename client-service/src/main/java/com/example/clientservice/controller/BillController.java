@@ -24,9 +24,9 @@ public class BillController {
         this.genericConverter = genericConverter;
     }
 
-    @GetMapping("/bills")
-    public Page<Bill> getAllBills(Pageable pageable){
-        return billService.getAllBills(pageable);
+    @GetMapping("/bills/page/{id}")
+    public Page<Bill> getAllBillsByClientId(@PathVariable("id") Long clientId,  Pageable pageable){
+        return billService.getAllBillsByClientId(pageable, clientId);
     }
 
     @PostMapping("/addBill/{clientId}")

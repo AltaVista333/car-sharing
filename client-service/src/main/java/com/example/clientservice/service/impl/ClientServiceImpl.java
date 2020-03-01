@@ -2,6 +2,8 @@ package com.example.clientservice.service.impl;
 
 import com.example.clientservice.entity.Client;
 import com.example.clientservice.exception.ClientNotFoundException;
+import com.example.clientservice.exception.DatabeseNotFountException;
+import com.example.clientservice.exception.ErrorMessages;
 import com.example.clientservice.repository.ClientRepository;
 import com.example.clientservice.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,7 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public Client findById(Long id) {
         log.info("Find client by id: {}", id);
-        return repository.findById(id).orElseThrow(() -> new ClientNotFoundException("No such client"));
+        return repository.findById(id).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
                     updatedClient.setSurname(client.getSurname());
                     updatedClient.setEmail(client.getEmail());
                     return repository.save(updatedClient);
-                }).orElseThrow(() -> new ServiceException("No such client"));
+                }).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 
     @Override

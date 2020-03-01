@@ -8,6 +8,6 @@ import java.util.Set;
 
 public interface BillService {
 
-    Page<Bill> getAllBills(Pageable pageable);
+    Page<Bill> getAllBillsByClientId(Pageable pageable, Long clientId);
     Bill addBill(Long postId, Bill bill);
 }

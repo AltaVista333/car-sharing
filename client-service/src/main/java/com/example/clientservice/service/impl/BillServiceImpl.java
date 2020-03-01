@@ -3,6 +3,8 @@ package com.example.clientservice.service.impl;
 import com.example.clientservice.entity.Bill;
 import com.example.clientservice.entity.Client;
 import com.example.clientservice.exception.ClientNotFoundException;
+import com.example.clientservice.exception.DatabeseNotFountException;
+import com.example.clientservice.exception.ErrorMessages;
 import com.example.clientservice.repository.BillRepository;
 import com.example.clientservice.repository.ClientRepository;
 import com.example.clientservice.service.BillService;
@@ -24,8 +26,8 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional
-    public Page<Bill> getAllBills(Pageable pageable) {
-        return billRepository.findAll(pageable);
+    public Page<Bill> getAllBillsByClientId(Pageable pageable, Long clientID) {
+        return billRepository.findByClientId(clientID, pageable);
     }
 
     @Override
@@ -36,6 +38,6 @@ public class BillServiceImpl implements BillService {
                     bill.setClient(client);
                     return billRepository.save(bill);
                 }
-        ).orElseThrow(() -> new ClientNotFoundException("Client " + clientId + " not found"));
+        ).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 }

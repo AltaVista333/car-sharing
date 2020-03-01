@@ -1,21 +1,30 @@
 package com.example.carservice.service.impl;
 
 import com.example.carservice.entity.Car;
+import com.example.carservice.entity.CarStatus;
+import com.example.carservice.exception.DatabeseNotFountException;
+import com.example.carservice.exception.ErrorMessages;
+import com.example.carservice.message.CarRentStatus;
+import com.example.carservice.message.UpdateCarStatus;
+import com.example.carservice.producer.ProducerService;
 import com.example.carservice.repository.CarRepository;
 import com.example.carservice.service.CarService;
-import org.hibernate.service.spi.ServiceException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class CarServiceImpl implements CarService {
 
     private CarRepository repository;
+    private ProducerService producerService;
 
-    public CarServiceImpl(CarRepository repository) {
+    public CarServiceImpl(CarRepository repository, ProducerService producerService) {
         this.repository = repository;
+        this.producerService = producerService;
     }
 
     @Override
@@ -32,7 +41,7 @@ public class CarServiceImpl implements CarService {
     @Override
     @Transactional
     public Car findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ServiceException("Car not found"));
+        return repository.findById(id).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 
     @Override
@@ -48,8 +57,26 @@ public class CarServiceImpl implements CarService {
                     updatedCar.setMinutePrice(car.getMinutePrice());
                     return repository.save(updatedCar);
                 })
-                .orElseThrow(() -> new ServiceException("No car found"));
+                .orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 
+    @Override
+    @Transactional
+    public void handleRentServiceMessage(UpdateCarStatus carStatusMessage) {
+        Car car = findById(carStatusMessage.getCarId());
 
+        if (car.getCarStatus().equals(CarStatus.ACTIVE)) {
+            car.setCarStatus(CarStatus.RENTED);
+            updateCar(car, car.getId());
+            producerService.sendToFanoutExchange(
+                    new CarRentStatus(CarStatus.RENTED.name(), car.getId(), carStatusMessage.getRentId()));
+        }
+
+        if (car.getCarStatus().equals(CarStatus.RENTED)) {
+            car.setCarStatus(CarStatus.ACTIVE);
+            updateCar(car, car.getId());
+            producerService.sendToFanoutExchange(
+                    new CarRentStatus(CarStatus.ACTIVE.name(), car.getId(), carStatusMessage.getRentId()));
+        }
+    }
 }

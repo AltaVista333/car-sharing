@@ -1,9 +1,5 @@
 package com.example.rentservice.consumer;
 
-import com.example.rentservice.entity.Rent;
-import com.example.rentservice.entity.RentStatus;
-import com.example.rentservice.message.BillDto;
-import com.example.rentservice.message.BillMessage;
 import com.example.rentservice.message.CarRentStatus;
 import com.example.rentservice.message.Message;
 import com.example.rentservice.producer.ProducerService;
@@ -12,10 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -34,10 +26,6 @@ public class ConsumerService {
     @Transactional
     public void handleQueueAMessageReception2(CarRentStatus carStatus) {
         rentService.handleCarQueue(carStatus);
-
-
-
-
     }
 
     @RabbitListener(queues = "${fromClient}")
