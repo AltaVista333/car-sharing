@@ -33,29 +33,8 @@ public class ConsumerService {
     @RabbitListener(queues = "${fromCar}")
     @Transactional
     public void handleQueueAMessageReception2(CarRentStatus carStatus) {
-        log.info("Message received from Car-service: {}", carStatus.getStatus());
-        Long rentId = carStatus.getRentId();
-        Optional<Rent> rentById = rentService.findRentById(rentId);
-        if("RENTED".equals(carStatus.getStatus())){
-            log.info("set rent status to ongoing");
-            rentById.ifPresent(rent -> {
-                rent.setStatus(RentStatus.ONGOING);
-                log.info(rent.getStatus().name());
-                rentService.updateRent(rent);
-            });
-        } else if ("ACTIVE".equals(carStatus.getStatus())){
-            log.info("set rent status to active");
-            rentById.ifPresent(rent -> {
-                rent.setStatus(RentStatus.ENDED);
-                rent.setEndRent(LocalDateTime.now());
-                log.info(rent.getStatus().name());
-                rentService.updateRent(rent);
-                BigDecimal bigDecimal = rentService.calculateBillForClient(carStatus.getCarId(), rent.getId());
-                if (bigDecimal.compareTo(BigDecimal.ZERO) > 0){
-                    producerService.sendToFanoutExchangeToClientService(new BillMessage(rentId,rent.getUserId(),bigDecimal,false));
-                }
-            });
-        }
+        rentService.handleCarQueue(carStatus);
+
 
 
 

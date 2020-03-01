@@ -1,6 +1,7 @@
 package com.example.rentservice.service;
 
 import com.example.rentservice.entity.Rent;
+import com.example.rentservice.message.CarRentStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,5 +15,6 @@ public interface RentService {
     Rent updateRent(Rent rent);
     Rent closeRent(Long id);
     boolean checkOngoingClientRent(Long id);
-    public BigDecimal calculateBillForClient(Long carId, Long rentId);
+    BigDecimal calculateBillForClient(Long carId, Long rentId);
+    void handleCarQueue(CarRentStatus carStatus);
 }

@@ -1,10 +1,19 @@
 package com.example.clientservice.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -18,7 +27,7 @@ public class Client {
 
     @Id
     @SequenceGenerator(name = "client_generator", sequenceName = "client_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "client_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_generator")
     private Long id;
 
     @NotNull
@@ -29,9 +38,5 @@ public class Client {
 
     @NotNull
     private String email;
-
-
-    /*@OneToMany(mappedBy = "client")
-    private Set<Bill> bills;*/
 
 }

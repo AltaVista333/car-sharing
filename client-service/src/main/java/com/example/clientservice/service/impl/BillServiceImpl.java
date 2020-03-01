@@ -9,6 +9,7 @@ import com.example.clientservice.service.BillService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -22,11 +23,13 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
+    @Transactional
     public Page<Bill> getAllBills(Pageable pageable) {
         return billRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional
     public Bill addBill(Long clientId, Bill bill) {
         return clientRepository.findById(clientId).map(
                 client -> {
