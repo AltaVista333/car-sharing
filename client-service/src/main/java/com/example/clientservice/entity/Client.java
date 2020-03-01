@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -29,7 +30,8 @@ public class Client {
     @NotNull
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+
+    /*@OneToMany(mappedBy = "client")
+    private Set<Bill> bills;*/
 
 }

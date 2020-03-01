@@ -1,12 +1,10 @@
 package com.example.clientservice.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -15,8 +13,11 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Bill {
     @Id
+    @SequenceGenerator(name = "bill_generator", sequenceName = "bill_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "bill_generator")
     private Long id;
 
     @NotNull
@@ -24,5 +25,13 @@ public class Bill {
 
     @NotNull
     private BigDecimal amount;
+
+
+    private Boolean paidOff;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
+    private Client client;
 
 }

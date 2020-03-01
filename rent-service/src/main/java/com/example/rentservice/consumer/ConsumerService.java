@@ -2,14 +2,18 @@ package com.example.rentservice.consumer;
 
 import com.example.rentservice.entity.Rent;
 import com.example.rentservice.entity.RentStatus;
+import com.example.rentservice.message.BillDto;
+import com.example.rentservice.message.BillMessage;
 import com.example.rentservice.message.CarRentStatus;
 import com.example.rentservice.message.Message;
+import com.example.rentservice.producer.ProducerService;
 import com.example.rentservice.service.RentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -18,9 +22,12 @@ import java.util.Optional;
 public class ConsumerService {
 
     private RentService rentService;
+    private ProducerService producerService;
 
-    public ConsumerService(RentService rentService) {
+
+    public ConsumerService(RentService rentService, ProducerService producerService) {
         this.rentService = rentService;
+        this.producerService = producerService;
     }
 
     @RabbitListener(queues = "${fromCar}")
@@ -43,13 +50,13 @@ public class ConsumerService {
                 rent.setEndRent(LocalDateTime.now());
                 log.info(rent.getStatus().name());
                 rentService.updateRent(rent);
-            });
-        } else {
-            rentById.ifPresent(rent -> {
-            rent.setStatus(RentStatus.REJECTED);
-            rentService.updateRent(rent);
+                BigDecimal bigDecimal = rentService.calculateBillForClient(carStatus.getCarId(), rent.getId());
+                if (bigDecimal.compareTo(BigDecimal.ZERO) > 0){
+                    producerService.sendToFanoutExchangeToClientService(new BillMessage(rentId,rent.getUserId(),bigDecimal,false));
+                }
             });
         }
+
 
 
     }

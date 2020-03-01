@@ -2,7 +2,6 @@ package com.example.clientservice.converter;
 
 import com.example.clientservice.dto.ClientDto;
 import com.example.clientservice.entity.Client;
-import com.example.clientservice.entity.Status;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,6 @@ public class ClientConverter implements GenericConverter<Client, ClientDto> {
                 .name(dto.getName())
                 .surname(dto.getSurname())
                 .email(dto.getEmail())
-                .status(Status.valueOf(dto.getStatus()))
                 .build();
     }
 
@@ -26,7 +24,6 @@ public class ClientConverter implements GenericConverter<Client, ClientDto> {
                 .name(entity.getName())
                 .surname(entity.getSurname())
                 .email(entity.getEmail())
-                .status(entity.getStatus().name())
                 .build();
     }
 }

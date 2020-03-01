@@ -1,5 +1,6 @@
 package com.example.rentservice.exception;
 
+import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class FeignErrorDecoder implements ErrorDecoder {
                 log.error("Status code " + response.status() + ", methidKey = " + methodKey);
             }
             default:
-                return new Exception(response.reason());
+                return new FeignCustomException("Feignt Exception", HttpStatus.SERVICE_UNAVAILABLE);
         }
 
     }

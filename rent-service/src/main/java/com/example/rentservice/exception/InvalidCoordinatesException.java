@@ -1,8 +1,11 @@
 package com.example.rentservice.exception;
 
-public class InvalidCoordinatesException extends RuntimeException {
-    public InvalidCoordinatesException(String message) {
-        super(message);
+import org.springframework.http.HttpStatus;
+
+public class InvalidCoordinatesException extends ServiceException {
+
+    public InvalidCoordinatesException(String message, HttpStatus status) {
+        super(message, status);
     }
 }
 

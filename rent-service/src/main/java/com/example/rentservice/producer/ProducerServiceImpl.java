@@ -1,5 +1,7 @@
 package com.example.rentservice.producer;
 
+import com.example.rentservice.message.BillDto;
+import com.example.rentservice.message.BillMessage;
 import com.example.rentservice.message.Message;
 import com.example.rentservice.message.UpdateCarStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +30,8 @@ public class ProducerServiceImpl implements ProducerService {
     }
 
     @Override
-    public void sendToFanoutExchangeToClientService(Message message) {
-        log.info("send message to client-service: {}", message);
-        template.convertAndSend(fanoutExchangeToClient, "", message);
+    public void sendToFanoutExchangeToClientService(BillMessage billMessage) {
+        log.info("Send bill to client service: {}", billMessage);
+        template.convertAndSend(fanoutExchangeToClient, "", billMessage);
     }
 }
