@@ -137,15 +137,18 @@ public class RentServiceImpl implements RentService {
     @Override
     @Transactional
     public void handleCarQueue(CarRentStatus carStatus) {
+        log.info("get message" + carStatus.getStatus());
         Long rentId = carStatus.getRentId();
         Optional<Rent> rentById = findRentById(rentId);
-        if("RENTED".equals(carStatus.getStatus())){
+        if("RENTED".equals(carStatus.getStatus().toUpperCase())){
+            log.info("rent");
             rentById.ifPresent(rent -> {
                 rent.setStatus(RentStatus.ONGOING);
                 log.info(rent.getStatus().name());
                 updateRent(rent);
             });
-        } else if ("ACTIVE".equals(carStatus.getStatus())){
+        } else if ("ACTIVE".equals(carStatus.getStatus().toUpperCase())){
+            log.info("close rent");
             rentById.ifPresent(rent -> {
                 rent.setStatus(RentStatus.ENDED);
                 rent.setEndRent(LocalDateTime.now());

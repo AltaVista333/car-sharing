@@ -15,4 +15,10 @@ public interface CarService {
     Car updateCar(Car car, Long id);
 
     void handleRentServiceMessage(UpdateCarStatus carStatusMessage);
+
+    List<Car> findCarsWithActiveStatus();
+
+    Car moveCar(Integer coordX, Integer coordY, Long id);
+
+    Car updateCarStatusToActive(Long id);
 }

@@ -41,12 +41,12 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<ClientDto> getAllUsers(){
+    public List<ClientDto> getAllClients(){
         return clientConverter.toDto(clientService.getAllClients());
     }
 
     @GetMapping(path = "/{id}")
-    public ClientDto getUserByID(@PathVariable("id") Long id){
+    public ClientDto getClientsByID(@PathVariable("id") Long id){
         Client client = clientService.findById(id);
         return clientConverter.toDto(client);
     }

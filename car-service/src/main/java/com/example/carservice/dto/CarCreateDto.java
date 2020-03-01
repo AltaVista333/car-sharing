@@ -3,6 +3,7 @@ package com.example.carservice.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Builder
@@ -15,12 +16,15 @@ public class CarCreateDto {
     private String model;
 
     @NotNull
+    @Positive
     private Integer coordX;
 
     @NotNull
+    @Positive
     private Integer coordY;
 
     @NotNull
+    @Positive
     private BigDecimal minutePrice;
 
     public CarCreateDto(@NotNull String model, @NotNull Integer coordX,

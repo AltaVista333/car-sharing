@@ -12,6 +12,7 @@ import com.example.carservice.service.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -19,35 +20,35 @@ import java.util.List;
 @Slf4j
 public class CarServiceImpl implements CarService {
 
-    private CarRepository repository;
+    private CarRepository carRepository;
     private ProducerService producerService;
 
     public CarServiceImpl(CarRepository repository, ProducerService producerService) {
-        this.repository = repository;
+        this.carRepository = repository;
         this.producerService = producerService;
     }
 
     @Override
     @Transactional
     public Car addCar(Car car) {
-        return repository.save(car);
+        return carRepository.save(car);
     }
 
     @Transactional
     public List<Car> getAllCars() {
-        return repository.findAll();
+        return carRepository.findAll();
     }
 
     @Override
     @Transactional
     public Car findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
+        return carRepository.findById(id).orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
 
     @Override
     @Transactional
     public Car updateCar(Car car, Long id) {
-        return repository.findById(id)
+        return carRepository.findById(id)
                 .map(updatedCar -> {
                     updatedCar.setId(car.getId());
                     updatedCar.setCarStatus(car.getCarStatus());
@@ -55,7 +56,7 @@ public class CarServiceImpl implements CarService {
                     updatedCar.setCoordY(car.getCoordY());
                     updatedCar.setModel(car.getModel());
                     updatedCar.setMinutePrice(car.getMinutePrice());
-                    return repository.save(updatedCar);
+                    return carRepository.save(updatedCar);
                 })
                 .orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
     }
@@ -70,13 +71,39 @@ public class CarServiceImpl implements CarService {
             updateCar(car, car.getId());
             producerService.sendToFanoutExchange(
                     new CarRentStatus(CarStatus.RENTED.name(), car.getId(), carStatusMessage.getRentId()));
-        }
-
-        if (car.getCarStatus().equals(CarStatus.RENTED)) {
+        } else if (car.getCarStatus().equals(CarStatus.RENTED)) {
             car.setCarStatus(CarStatus.ACTIVE);
             updateCar(car, car.getId());
             producerService.sendToFanoutExchange(
                     new CarRentStatus(CarStatus.ACTIVE.name(), car.getId(), carStatusMessage.getRentId()));
         }
+
+
+    }
+
+    @Override
+    @Transactional
+    public List<Car> findCarsWithActiveStatus() {
+        return carRepository.findAllByCarStatus(CarStatus.ACTIVE);
+    }
+
+    @Override
+    @Transactional
+    public Car moveCar(Integer coordX, Integer coordY, Long id) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
+        car.setCoordX(coordX);
+        car.setCoordY(coordY);
+        return carRepository.save(car);
+
+    }
+
+    @Override
+    @Transactional
+    public Car updateCarStatusToActive(Long id) {
+        Car car = carRepository.findById(id)
+                .orElseThrow(() -> new DatabeseNotFountException(ErrorMessages.NOT_FOUND));
+        car.setCarStatus(CarStatus.ACTIVE);
+        return carRepository.save(car);
     }
 }

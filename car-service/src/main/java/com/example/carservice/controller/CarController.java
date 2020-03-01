@@ -3,6 +3,7 @@ package com.example.carservice.controller;
 import com.example.carservice.converter.GenericConverter;
 import com.example.carservice.dto.CarCreateDto;
 import com.example.carservice.dto.CarDto;
+import com.example.carservice.dto.CarMoveDto;
 import com.example.carservice.entity.Car;
 import com.example.carservice.message.Message;
 import com.example.carservice.producer.ProducerService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 import static com.example.carservice.logger.CarControllerLog.*;
@@ -47,6 +49,11 @@ public class CarController {
         return ResponseEntity.status(201).build();
     }
 
+    @GetMapping(path = "/active")
+    public List<CarDto> findCarsWithActiveStatus(){
+       return carConverter.toDto(carService.findCarsWithActiveStatus());
+    }
+
     @GetMapping("/{id}")
     public CarDto getCarById(@PathVariable("id") Long id) {
         log.info(CAR_BY_ID, id);
@@ -54,12 +61,24 @@ public class CarController {
                 carService.findById(id));
     }
 
+    @PutMapping("/move/{id}")
+    public CarDto moveCar(@RequestParam("id") Long carId, @RequestBody CarMoveDto carMoveDto){
+        Car car = carService.moveCar(carMoveDto.getCoordX(), carMoveDto.getCoortY(), carId);
+        return carConverter.toDto(car);
+    }
+
 
     @PutMapping("/{id}")
-    public CarDto updateCarById(@RequestBody @Valid CarDto carDto) {
+    public CarDto updateCar(@RequestBody @Valid CarDto carDto) {
         return carConverter.toDto(
                 carService.updateCar(
                         carConverter.toEntity(carDto), carDto.getId()));
+    }
+
+    @PutMapping("/activate/{id}")
+    public CarDto setCarStatusToActive(@RequestParam("id") Long carId){
+        return carConverter.toDto(
+                carService.updateCarStatusToActive(carId));
     }
 
 
